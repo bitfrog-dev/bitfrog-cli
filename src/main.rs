@@ -1,13 +1,15 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, process::exit};
 use clap::Parser;
 use urlencoding::encode;
+use std::env;
 
 const ENDPOINT: &str = "https://bitfrog.dev/v1";
 
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
 struct Args{
-    token: String,
+    /// The project token (will attempt to load env variable BITFROG_TOKEN if not specified)
+    token: Option<String>,
 
     /// Name of the channel (will default to the first channel)
     #[arg(short('c'), long("channel"))]
@@ -56,11 +58,24 @@ fn send(token: String, message: String, title: Option<String>, channel: Option<S
 
 fn main() {
     let args = Args::parse();
-    // dbg!(args.token);
-    // let args: Vec<String> = env::args().collect();
-    // dbg!(args);
+
+    let token: String;
+
+    match args.token {
+        Some(arg_token) => { token = arg_token},
+        None => {
+            let val = env::var("BITFROG_TOKEN");
+            match val {
+                Ok(val) => { token = val },
+                Err(_) => {
+                    panic!("BITFROG_TOKEN env variable not found. Please specify a token or add the env variable.");
+                },
+            }
+        },
+    }
+
     send(
-        args.token, 
+        token, 
         encode(&args.message).into_owned(), 
         args.title, 
         args.channel
