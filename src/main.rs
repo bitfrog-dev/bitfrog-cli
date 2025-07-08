@@ -24,9 +24,14 @@ struct Args{
     /// The notification title
     #[arg(short('T'), long("title"))]
     title: Option<String>,
+
+    /// Disables server warning messages
+    #[arg(short('w'), long("nowarning"))]
+    no_warnings: bool
 }
 
-fn send(token: String, message: String, title: Option<String>, channel: Option<String>){
+fn send(token: String, message: String, title: Option<String>, channel: Option<String>,
+        warnings: bool){
     let mut url = ENDPOINT.to_owned() + "/notify?token=" + &token + "&message=" + &message;
 
     match title {
@@ -50,11 +55,18 @@ fn send(token: String, message: String, title: Option<String>, channel: Option<S
 
     if result.status() == reqwest::StatusCode::TOO_MANY_REQUESTS {
         println!("Too many requests. Try again later.");
-    }else if !result.status().is_success() {
+    }else{
         let response_json = result.json::<HashMap<String, String>>()
-                                                           .expect("Failed to parse json response.");
-        let error = response_json.get("error").expect("Response has no error code.");
-        println!("Bitfrog Error: {error}");
+        .expect("Failed to parse json response.");
+
+        if response_json.contains_key("error") {
+            let error = response_json.get("error").expect("");
+            println!("{}: {error}", "server error".red());
+        }
+        if warnings && response_json.contains_key("warning") {
+            let warning = response_json.get("warning").expect("");
+            println!("{}{}", "server warning: ".yellow(), warning.yellow());
+        }
     }
 }
 
@@ -82,6 +94,7 @@ fn main() {
         token, 
         encode(&args.message).into_owned(), 
         args.title, 
-        args.channel
+        args.channel,
+        !args.no_warnings
     );
 }
