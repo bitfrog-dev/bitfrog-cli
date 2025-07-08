@@ -13,4 +13,8 @@
 **Example:** `bitfrog 6ae9-ce81-feb0-0091 -m "Hello World"`
 
 ## Installation
-Download the latest release, place somewhere safe on your device, add parent folder to PATH environment variable.
+### Windows
+Download the [latest release](https://github.com/bitfrog-dev/bitfrog-cli/releases/latest) for the installer.
+
+### Linux / MacOS
+Build with `cargo build` and place somewhere safe, then add the parent folder to the `PATH` environment variable.
