@@ -3,13 +3,16 @@
 
 ## Usage
 
-`bitfrog [OPTIONS]`
+`bitfrog [OPTIONS / FLAGS]`
 
-**Command options:**
+**Options:**
 - `-t, --token` - The project token
 - `-c, --channel` - The name of the project channel to target
 - `-m, --message` - The notification message
 - `-T, --title` - The notification title (for **Bitfrog Pro** projects)
+
+**Flags:**
+- `-w, --nowarning` - Disables server warnings
 
 **Example:** `bitfrog -t 6ae9-ce81-feb0-0091 -m "Hello World"`
 
