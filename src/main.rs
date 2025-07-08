@@ -1,17 +1,16 @@
-use std::{collections::HashMap, process::exit};
-use clap::Parser;
+use std::{collections::HashMap};
+use clap::{Parser};
 use urlencoding::encode;
-use std::env;
 use colored::Colorize;
 
 const ENDPOINT: &str = "https://bitfrog.dev/v1";
 
 #[derive(Parser)]
-#[command(version, about, long_about = None)]
+#[command(version, about, long_about = "A command line tool for easily sending Bitfrog notifications")]
 struct Args{
     /// The project token (will attempt to load env variable BITFROG_TOKEN if not specified)
-    #[arg(short('t'), long("token"))]
-    token: Option<String>,
+    #[arg(short('t'), long("token"), env("BITFROG_TOKEN"))]
+    token: String,
 
     /// Name of the channel (will default to the first channel)
     #[arg(short('c'), long("channel"))]
@@ -22,7 +21,7 @@ struct Args{
     message: String,
 
     /// The notification title
-    #[arg(short('T'), long("title"))]
+    #[arg(short('T'), long("title"), help("adawdawd\n"))]
     title: Option<String>,
 
     /// Disables server warning messages
@@ -73,25 +72,8 @@ fn send(token: String, message: String, title: Option<String>, channel: Option<S
 fn main() {
     let args = Args::parse();
 
-    let token: String;
-
-    match args.token {
-        Some(arg_token) => { token = arg_token},
-        None => {
-            let val = env::var("BITFROG_TOKEN");
-            match val {
-                Ok(val) => { token = val },
-                Err(_) => {
-                    println!("{} BITFROG_TOKEN env variable not found, please specify a token with '{}'", "error:".red(), "--token <TOKEN>".yellow());
-                    println!("\nFor more information, try '{}'.", "--help".bold());
-                    exit(101);
-                },
-            }
-        },
-    }
-
     send(
-        token, 
+        args.token, 
         encode(&args.message).into_owned(), 
         args.title, 
         args.channel,
