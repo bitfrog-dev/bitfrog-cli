@@ -1,4 +1,4 @@
-use std::{collections::HashMap, process::exit};
+use std::collections::HashMap;
 use clap::Parser;
 use urlencoding::encode;
 use std::env;
