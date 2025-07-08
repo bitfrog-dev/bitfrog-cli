@@ -3,14 +3,15 @@
 
 ## Usage
 
-`bitfrog <TOKEN> [OPTIONS]`
+`bitfrog [OPTIONS]`
 
 **Command options:**
+- `-t, --token` - The project token
 - `-c, --channel` - The name of the project channel to target
 - `-m, --message` - The notification message
-- `-t, --title` - The notification title (for **Bitfrog Pro** projects)
+- `-T, --title` - The notification title (for **Bitfrog Pro** projects)
 
-**Example:** `bitfrog 6ae9-ce81-feb0-0091 -m "Hello World"`
+**Example:** `bitfrog -t 6ae9-ce81-feb0-0091 -m "Hello World"`
 
 ## Installation
 ### Windows

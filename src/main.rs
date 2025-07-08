@@ -1,7 +1,8 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, process::exit};
 use clap::Parser;
 use urlencoding::encode;
 use std::env;
+use colored::Colorize;
 
 const ENDPOINT: &str = "https://bitfrog.dev/v1";
 
@@ -9,6 +10,7 @@ const ENDPOINT: &str = "https://bitfrog.dev/v1";
 #[command(version, about, long_about = None)]
 struct Args{
     /// The project token (will attempt to load env variable BITFROG_TOKEN if not specified)
+    #[arg(short('t'), long("token"))]
     token: Option<String>,
 
     /// Name of the channel (will default to the first channel)
@@ -20,7 +22,7 @@ struct Args{
     message: String,
 
     /// The notification title
-    #[arg(short('t'), long("title"))]
+    #[arg(short('T'), long("title"))]
     title: Option<String>,
 }
 
@@ -68,7 +70,9 @@ fn main() {
             match val {
                 Ok(val) => { token = val },
                 Err(_) => {
-                    panic!("BITFROG_TOKEN env variable not found. Please specify a token or add the env variable.");
+                    println!("{} BITFROG_TOKEN env variable not found, please specify a token with '{}'", "error:".red(), "--token <TOKEN>".yellow());
+                    println!("\nFor more information, try '{}'.", "--help".bold());
+                    exit(101);
                 },
             }
         },
